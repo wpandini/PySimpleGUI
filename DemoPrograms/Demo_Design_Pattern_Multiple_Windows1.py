@@ -36,6 +36,9 @@ def main():
 
     while True:
         window, event, values = sg.read_all_windows()
+
+        print(window,window2)
+
         if event == sg.WIN_CLOSED and window == window1:
             break
 

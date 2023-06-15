@@ -85,6 +85,8 @@ window = make_window()
 
 while True:
     event, values = window.read()
+
+
     # sg.Print(event, values)
     if event == sg.WIN_CLOSED or event == 'Exit':
         break

@@ -42,6 +42,7 @@ __version__ = '1.12.0'
 
 python_only = True
 
+
 def get_file_list_dict():
     """
     Returns dictionary of files
@@ -100,7 +101,7 @@ def get_global_editor():
     :return: Path to the editor
     :rtype: str
     """
-    try:    # in case running with old version of PySimpleGUI that doesn't have a global PSG settings path
+    try:  # in case running with old version of PySimpleGUI that doesn't have a global PSG settings path
         global_editor = sg.pysimplegui_user_settings.get('-editor program-')
     except:
         global_editor = ''
@@ -114,7 +115,7 @@ def get_editor():
     :return: Path to the editor
     :rtype: str
     """
-    try:    # in case running with old version of PySimpleGUI that doesn't have a global PSG settings path
+    try:  # in case running with old version of PySimpleGUI that doesn't have a global PSG settings path
         global_editor = sg.pysimplegui_user_settings.get('-editor program-')
     except:
         global_editor = ''
@@ -124,9 +125,10 @@ def get_editor():
 
     return user_editor
 
+
 def using_local_editor():
     user_editor = sg.user_settings_get_entry('-editor program-', None)
-    return get_editor() ==  user_editor
+    return get_editor() == user_editor
 
 
 def get_explorer():
@@ -136,7 +138,7 @@ def get_explorer():
     :return: Path to the file explorer EXE
     :rtype: str
     """
-    try:    # in case running with old version of PySimpleGUI that doesn't have a global PSG settings path
+    try:  # in case running with old version of PySimpleGUI that doesn't have a global PSG settings path
         global_explorer = sg.pysimplegui_user_settings.get('-explorer program-', '')
     except:
         global_explorer = ''
@@ -154,7 +156,6 @@ def advanced_mode():
     :rtype: bool
     """
     return sg.user_settings_get_entry('-advanced mode-', True)
-
 
 
 def get_theme():
@@ -175,9 +176,11 @@ def get_theme():
         user_theme = global_theme
     return user_theme
 
+
 # We handle our code properly. But in case the user types in a flag, the flags are now in the middle of a regex. Ignore this warning.
 
 warnings.filterwarnings("ignore", category=DeprecationWarning)
+
 
 # New function
 def get_line_number(file_path, string, dupe_lines):
@@ -187,11 +190,14 @@ def get_line_number(file_path, string, dupe_lines):
             if string.strip() == line.strip() and num not in dupe_lines:
                 lmn = num
     return lmn
-    
+
+
 def kill_ascii(s):
     return "".join([x if ord(x) < 128 else '?' for x in s])
 
-def find_in_file(string, demo_files_dict, regex=False, verbose=False, window=None, ignore_case=True, show_first_match=True):
+
+def find_in_file(string, demo_files_dict, regex=False, verbose=False, window=None, ignore_case=True,
+                 show_first_match=True):
     """
     Search through the demo files for a string.
     The case of the string and the file contents are ignored
@@ -204,7 +210,6 @@ def find_in_file(string, demo_files_dict, regex=False, verbose=False, window=Non
     :return: List of files containing the string
     :rtype: List[str]
     """
-
 
     # So you face a predicament here. You wish to read files, both small and large; however the bigger the file/bigger the list, the longer to read the file.
     # This probably isn't what you want, right?
@@ -243,7 +248,7 @@ def find_in_file(string, demo_files_dict, regex=False, verbose=False, window=Non
                                     file_list.append(file)
                                     num_files += 1
                                 if verbose:
-                                    sg.cprint(f"{file}:", c = 'white on green')
+                                    sg.cprint(f"{file}:", c='white on green')
                                     sg.cprint(f"{match.group(0).decode('utf-8')}\n")
                 else:
                     window['-FIND NUMBER-'].update(f'{num_files} files')
@@ -251,18 +256,22 @@ def find_in_file(string, demo_files_dict, regex=False, verbose=False, window=Non
                     matches = None
                     if ignore_case:
                         if show_first_match:
-                            matches = re.search(br'(?i)^' + bytes(".*("+re.escape(string.lower()) + ").*$", 'utf-8'), s, re.MULTILINE)
+                            matches = re.search(br'(?i)^' + bytes(".*(" + re.escape(string.lower()) + ").*$", 'utf-8'),
+                                                s, re.MULTILINE)
                         else:
-                            matches = re.finditer(br'(?i)^' + bytes(".*("+re.escape(string.lower()) + ").*$", 'utf-8'), s, re.MULTILINE)
+                            matches = re.finditer(
+                                br'(?i)^' + bytes(".*(" + re.escape(string.lower()) + ").*$", 'utf-8'), s, re.MULTILINE)
                     else:
                         if show_first_match:
-                            matches = re.search(br'^' + bytes(".*("+re.escape(string) + ").*$", 'utf-8'), s, re.MULTILINE)
+                            matches = re.search(br'^' + bytes(".*(" + re.escape(string) + ").*$", 'utf-8'), s,
+                                                re.MULTILINE)
                         else:
-                            matches = re.finditer(br'^' + bytes(".*("+re.escape(string) + ").*$", 'utf-8'), s, re.MULTILINE)
+                            matches = re.finditer(br'^' + bytes(".*(" + re.escape(string) + ").*$", 'utf-8'), s,
+                                                  re.MULTILINE)
                     if matches:
                         if show_first_match:
-                            #file_list.append(file)
-                            #num_files += 1
+                            # file_list.append(file)
+                            # num_files += 1
                             match_array = []
 
                             matched_str = matches.group(0).decode('utf-8')
@@ -280,7 +289,7 @@ def find_in_file(string, demo_files_dict, regex=False, verbose=False, window=Non
                                 matched_str = match_.group(0).decode('utf-8')
                                 if matched_str:
                                     if not all(x in matched_str for x in ("b'", '=')) and len(matched_str) < 500:
-                                    # if len(match_str) < 500 and "=" not in match_str and "b'" not in match_str:
+                                        # if len(match_str) < 500 and "=" not in match_str and "b'" not in match_str:
                                         match_array.append(matched_str)
                                         append_file = True
                             if append_file:
@@ -319,7 +328,7 @@ def find_in_file(string, demo_files_dict, regex=False, verbose=False, window=Non
                     line_num_match = get_line_number(key, _match, dupe_lines)
                     dupe_lines.append(line_num_match)
                     file_array_new.append(line_num_match)
-                    file_match_list.append(_match) # I *really* overthinked this.
+                    file_match_list.append(_match)  # I *really* overthinked this.
                     if verbose:
                         sg.cprint(f"Line: {line_num_match} ", c='white on purple', end='')
                         sg.cprint(f"{_match.strip()}\n")
@@ -327,7 +336,7 @@ def find_in_file(string, demo_files_dict, regex=False, verbose=False, window=Non
                     list_of_matches.append(_match.strip())
                 file_array_old.append(file_array_new)
                 file_array_old.append(file_match_list)
-                
+
                 if tail in file_lines_dict:
                     for i in range(1, 100):
                         new_tail = f'{tail}_{i}'
@@ -344,7 +353,7 @@ def find_in_file(string, demo_files_dict, regex=False, verbose=False, window=Non
     return file_list
 
 
-def window_choose_line_to_edit(filename, full_filename,  line_num_list, match_list):
+def window_choose_line_to_edit(filename, full_filename, line_num_list, match_list):
     # sg.popup('matches previously found for this file:', filename, line_num_list)
     i = 0
     if len(line_num_list) == 1:
@@ -352,7 +361,8 @@ def window_choose_line_to_edit(filename, full_filename,  line_num_list, match_li
     layout = [[sg.T(f'Choose line from {filename}', font='_ 14')]]
     for line in sorted(set(line_num_list)):
         match_text = match_list[i]
-        layout += [[sg.Text(f'Line {line} : {match_text}', key=('-T-', line), enable_events=True, size=(min(len(match_text), 90), None))]]
+        layout += [[sg.Text(f'Line {line} : {match_text}', key=('-T-', line), enable_events=True,
+                            size=(min(len(match_text), 90), None))]]
         i += 1
     layout += [[sg.B('Cancel')]]
 
@@ -390,26 +400,31 @@ def settings_window():
         global_explorer = sg.pysimplegui_user_settings.get('-explorer program-')
     except:
         global_explorer = ''
-    try:    # in case running with old version of PySimpleGUI that doesn't have a global PSG settings path
+    try:  # in case running with old version of PySimpleGUI that doesn't have a global PSG settings path
         global_theme = sg.theme_global()
     except:
         global_theme = ''
 
     layout = [[sg.T('Program Settings', font='DEFAULT 25')],
-              [sg.T('Path to Tree',  font='_ 16')],
-               [sg.Combo(sorted(sg.user_settings_get_entry('-folder names-', [])), default_value=sg.user_settings_get_entry('-demos folder-', get_demo_path()), size=(50, 1), key='-FOLDERNAME-'),
+              [sg.T('Path to Tree', font='_ 16')],
+              [sg.Combo(sorted(sg.user_settings_get_entry('-folder names-', [])),
+                        default_value=sg.user_settings_get_entry('-demos folder-', get_demo_path()), size=(50, 1),
+                        key='-FOLDERNAME-'),
                sg.FolderBrowse('Folder Browse', target='-FOLDERNAME-'), sg.B('Clear History')],
-              [sg.T('Editor Program',  font='_ 16')],
+              [sg.T('Editor Program', font='_ 16')],
               [sg.T('Leave blank to use global default'), sg.T(global_editor)],
-                [ sg.In(sg.user_settings_get_entry('-editor program-', ''),k='-EDITOR PROGRAM-'), sg.FileBrowse()],
-              [sg.T('File Explorer Program',  font='_ 16')],
+              [sg.In(sg.user_settings_get_entry('-editor program-', ''), k='-EDITOR PROGRAM-'), sg.FileBrowse()],
+              [sg.T('File Explorer Program', font='_ 16')],
               [sg.T('Leave blank to use global default'), sg.T(global_explorer)],
-              [ sg.In(sg.user_settings_get_entry('-explorer program-'), k='-EXPLORER PROGRAM-'), sg.FileBrowse()],
-               [sg.T('Theme', font='_ 16')],
+              [sg.In(sg.user_settings_get_entry('-explorer program-'), k='-EXPLORER PROGRAM-'), sg.FileBrowse()],
+              [sg.T('Theme', font='_ 16')],
               [sg.T('Leave blank to use global default'), sg.T(global_theme)],
-              [sg.Combo(['']+sg.theme_list(),sg.user_settings_get_entry('-theme-', ''), readonly=True,  k='-THEME-')],
-              [sg.T('Double-click a File Will:'), sg.R('Run', 2, sg.user_settings_get_entry('-dclick runs-', False), k='-DCLICK RUNS-'), sg.R('Edit', 2,  sg.user_settings_get_entry('-dclick edits-', False), k='-DCLICK EDITS-'), sg.R('Nothing', 2,  sg.user_settings_get_entry('-dclick none-', False), k='-DCLICK NONE-')],
-              [sg.CB('Use Advanced Interface', default=advanced_mode() ,k='-ADVANCED MODE-')],
+              [sg.Combo([''] + sg.theme_list(), sg.user_settings_get_entry('-theme-', ''), readonly=True, k='-THEME-')],
+              [sg.T('Double-click a File Will:'),
+               sg.R('Run', 2, sg.user_settings_get_entry('-dclick runs-', False), k='-DCLICK RUNS-'),
+               sg.R('Edit', 2, sg.user_settings_get_entry('-dclick edits-', False), k='-DCLICK EDITS-'),
+               sg.R('Nothing', 2, sg.user_settings_get_entry('-dclick none-', False), k='-DCLICK NONE-')],
+              [sg.CB('Use Advanced Interface', default=advanced_mode(), k='-ADVANCED MODE-')],
               [sg.B('Ok', bind_return_key=True), sg.B('Cancel')],
               ]
 
@@ -425,7 +440,8 @@ def settings_window():
             sg.user_settings_set_entry('-demos folder-', values['-FOLDERNAME-'])
             sg.user_settings_set_entry('-editor program-', values['-EDITOR PROGRAM-'])
             sg.user_settings_set_entry('-theme-', values['-THEME-'])
-            sg.user_settings_set_entry('-folder names-', list(set(sg.user_settings_get_entry('-folder names-', []) + [values['-FOLDERNAME-'], ])))
+            sg.user_settings_set_entry('-folder names-', list(
+                set(sg.user_settings_get_entry('-folder names-', []) + [values['-FOLDERNAME-'], ])))
             sg.user_settings_set_entry('-explorer program-', values['-EXPLORER PROGRAM-'])
             sg.user_settings_set_entry('-advanced mode-', values['-ADVANCED MODE-'])
             sg.user_settings_set_entry('-dclick runs-', values['-DCLICK RUNS-'])
@@ -441,7 +457,9 @@ def settings_window():
     window.close()
     return settings_changed
 
-ML_KEY = '-ML-'         # Multline's key
+
+ML_KEY = '-ML-'  # Multline's key
+
 
 # --------------------------------- Create the window ---------------------------------
 def make_window():
@@ -460,50 +478,68 @@ def make_window():
     filter_tooltip = "Filter files\nEnter a string in box to narrow down the list of files.\nFile list will update with list of files with string in filename."
     find_re_tooltip = "Find in file using Regular Expression\nEnter a string in box to search for string inside of the files.\nSearch is performed after clicking the FindRE button."
 
-
     left_col = sg.Column([
-        [sg.Listbox(values=get_file_list(), select_mode=sg.SELECT_MODE_EXTENDED, size=(50,20), bind_return_key=True, key='-DEMO LIST-', expand_x=True, expand_y=True)],
-        [sg.Text('Filter (F1):', tooltip=filter_tooltip), sg.Input(size=(25, 1), focus=True, enable_events=True, key='-FILTER-', tooltip=filter_tooltip),
-         sg.T(size=(15,1), k='-FILTER NUMBER-')],
+        [sg.Listbox(values=get_file_list(), select_mode=sg.SELECT_MODE_EXTENDED, size=(50, 20), bind_return_key=True,
+                    key='-DEMO LIST-', expand_x=True, expand_y=True)],
+        [sg.Text('Filter (F1):', tooltip=filter_tooltip),
+         sg.Input(size=(25, 1), focus=True, enable_events=True, key='-FILTER-', tooltip=filter_tooltip),
+         sg.T(size=(15, 1), k='-FILTER NUMBER-')],
         [sg.Button('Run'), sg.B('Edit'), sg.B('Clear'), sg.B('Open Folder'), sg.B('Copy Path')],
-        [sg.Text('Find (F2):', tooltip=find_tooltip), sg.Input(size=(25, 1), enable_events=True, key='-FIND-', tooltip=find_tooltip),
-         sg.T(size=(15,1), k='-FIND NUMBER-')],
+        [sg.Text('Find (F2):', tooltip=find_tooltip),
+         sg.Input(size=(25, 1), enable_events=True, key='-FIND-', tooltip=find_tooltip),
+         sg.T(size=(15, 1), k='-FIND NUMBER-')],
     ], element_justification='l', expand_x=True, expand_y=True)
 
     lef_col_find_re = sg.pin(sg.Col([
-        [sg.Text('Find (F3):', tooltip=find_re_tooltip), sg.Input(size=(25, 1),key='-FIND RE-', tooltip=find_re_tooltip),sg.B('Find RE')]], k='-RE COL-'))
+        [sg.Text('Find (F3):', tooltip=find_re_tooltip),
+         sg.Input(size=(25, 1), key='-FIND RE-', tooltip=find_re_tooltip), sg.B('Find RE')]], k='-RE COL-'))
 
     right_col = [
-        [sg.Multiline(size=(70, 21), write_only=True, expand_x=True, expand_y=True, key=ML_KEY, reroute_stdout=True, echo_stdout_stderr=True, reroute_cprint=True)],
+        [sg.Multiline(size=(70, 21), write_only=True, expand_x=True, expand_y=True, key=ML_KEY, reroute_stdout=True,
+                      echo_stdout_stderr=True, reroute_cprint=True)],
         [sg.B('Settings'), sg.Button('Exit')],
         [sg.T('Demo Browser Ver ' + __version__)],
-        [sg.T('PySimpleGUI ver ' + sg.version.split(' ')[0] + '  tkinter ver ' + sg.tclversion_detailed, font='Default 8', pad=(0,0))],
-        [sg.T('Python ver ' + sys.version, font='Default 8', pad=(0,0))],
-        [sg.T('Interpreter ' + sg.execute_py_get_interpreter(), font='Default 8', pad=(0,0))],
+        [sg.T('PySimpleGUI ver ' + sg.version.split(' ')[0] + '  tkinter ver ' + sg.tclversion_detailed,
+              font='Default 8', pad=(0, 0))],
+        [sg.T('Python ver ' + sys.version, font='Default 8', pad=(0, 0))],
+        [sg.T('Interpreter ' + sg.execute_py_get_interpreter(), font='Default 8', pad=(0, 0))],
     ]
 
-    options_at_bottom = sg.pin(sg.Column([[sg.CB('Verbose', enable_events=True, k='-VERBOSE-', tooltip='Enable to see the matches in the right hand column'),
-                         sg.CB('Show only first match in file', default=True, enable_events=True, k='-FIRST MATCH ONLY-', tooltip='Disable to see ALL matches found in files'),
-                         sg.CB('Find ignore case', default=True, enable_events=True, k='-IGNORE CASE-'),
-                         sg.CB('Wait for Runs to Complete', default=False, enable_events=True, k='-WAIT-'),
-                         sg.CB('Show ALL file types', default=not python_only, enable_events=True, k='-SHOW ALL FILES-'),
+    options_at_bottom = sg.pin(sg.Column([[sg.CB('Verbose', enable_events=True, k='-VERBOSE-',
+                                                 tooltip='Enable to see the matches in the right hand column'),
+                                           sg.CB('Show only first match in file', default=True, enable_events=True,
+                                                 k='-FIRST MATCH ONLY-',
+                                                 tooltip='Disable to see ALL matches found in files'),
+                                           sg.CB('Find ignore case', default=True, enable_events=True,
+                                                 k='-IGNORE CASE-'),
+                                           sg.CB('Wait for Runs to Complete', default=False, enable_events=True,
+                                                 k='-WAIT-'),
+                                           sg.CB('Show ALL file types', default=not python_only, enable_events=True,
+                                                 k='-SHOW ALL FILES-'),
                                            ]],
-                                         pad=(0,0), k='-OPTIONS BOTTOM-',  expand_x=True, expand_y=False),  expand_x=True, expand_y=False)
+                                         pad=(0, 0), k='-OPTIONS BOTTOM-', expand_x=True, expand_y=False),
+                               expand_x=True, expand_y=False)
 
-    choose_folder_at_top = sg.pin(sg.Column([[sg.T('Click settings to set top of your tree or choose a previously chosen folder'),
-                                       sg.Combo(sorted(sg.user_settings_get_entry('-folder names-', [])), default_value=sg.user_settings_get_entry('-demos folder-', ''), size=(50, 30), key='-FOLDERNAME-', enable_events=True, readonly=True)]], pad=(0,0), k='-FOLDER CHOOSE-'))
+    choose_folder_at_top = sg.pin(
+        sg.Column([[sg.T('Click settings to set top of your tree or choose a previously chosen folder'),
+                    sg.Combo(sorted(sg.user_settings_get_entry('-folder names-', [])),
+                             default_value=sg.user_settings_get_entry('-demos folder-', ''), size=(50, 30),
+                             key='-FOLDERNAME-', enable_events=True, readonly=True)]], pad=(0, 0), k='-FOLDER CHOOSE-'))
     # ----- Full layout -----
 
     layout = [[sg.Text('PySimpleGUI Demo Program & Project Browser', font='Any 20')],
               [choose_folder_at_top],
               # [sg.Column([[left_col],[ lef_col_find_re]], element_justification='l',  expand_x=True, expand_y=True), sg.Column(right_col, element_justification='c', expand_x=True, expand_y=True)],
-              [sg.Pane([sg.Column([[left_col],[ lef_col_find_re]], element_justification='l',  expand_x=True, expand_y=True), sg.Column(right_col, element_justification='c', expand_x=True, expand_y=True) ], orientation='h', relief=sg.RELIEF_SUNKEN, expand_x=True, expand_y=True, k='-PANE-')],
+              [sg.Pane(
+                  [sg.Column([[left_col], [lef_col_find_re]], element_justification='l', expand_x=True, expand_y=True),
+                   sg.Column(right_col, element_justification='c', expand_x=True, expand_y=True)], orientation='h',
+                  relief=sg.RELIEF_SUNKEN, expand_x=True, expand_y=True, k='-PANE-')],
               [options_at_bottom, sg.Sizegrip()]]
 
     # --------------------------------- Create Window ---------------------------------
-    window = sg.Window('PSG Demo & Project Browser', layout, finalize=True,  resizable=True, use_default_focus=False, right_click_menu=sg.MENU_RIGHT_CLICK_EDITME_VER_EXIT)
+    window = sg.Window('PSG Demo & Project Browser', layout, finalize=True, resizable=True, use_default_focus=False,
+                       right_click_menu=sg.MENU_RIGHT_CLICK_EDITME_VER_EXIT)
     window.set_min_size(window.size)
-
 
     # window.bind("<Alt_L><x>", 'Exit')       # matches the underscore shown on the Exit button (For now disabled this feature until buttons with underscore released to PyPI)
 
@@ -532,7 +568,7 @@ def main():
         version = sg.version
         version_parts = version.split('.')
         major_version, minor_version = int(version_parts[0]), int(version_parts[1])
-        if major_version < 4 or (major_version== 4 and minor_version < 32):
+        if major_version < 4 or (major_version == 4 and minor_version < 32):
             sg.popup('Warning - Your PySimpleGUI version is less then 4.35.0',
                      'As a result, you will not be able to use the EDIT features of this program',
                      'Please upgrade to at least 4.35.0',
@@ -557,11 +593,11 @@ def main():
     while True:
         event, values = window.read()
         # print(event, values)
-        
+
         counter += 1
         if event in (sg.WINDOW_CLOSED, 'Exit'):
             break
-        if event == '-DEMO LIST-':           # if double clicked (used the bind return key parm)
+        if event == '-DEMO LIST-':  # if double clicked (used the bind return key parm)
             if sg.user_settings_get_entry('-dclick runs-'):
                 event = 'Run'
             elif sg.user_settings_get_entry('-dclick edits-'):
@@ -570,7 +606,9 @@ def main():
             editor_program = get_editor()
             for file in values['-DEMO LIST-']:
                 if find_in_file.file_list_dict is not None:
-                    full_filename, line = window_choose_line_to_edit(file, find_in_file.file_list_dict[file][0], find_in_file.file_list_dict[file][1], find_in_file.file_list_dict[file][2])
+                    full_filename, line = window_choose_line_to_edit(file, find_in_file.file_list_dict[file][0],
+                                                                     find_in_file.file_list_dict[file][1],
+                                                                     find_in_file.file_list_dict[file][2])
                 else:
                     full_filename, line = get_file_list_dict()[file], 1
                 if line is not None:
@@ -594,7 +632,7 @@ def main():
             sg.cprint('')
             for file in values['-DEMO LIST-']:
                 file_to_run = str(file_list_dict[file])
-                sg.cprint(file_to_run,text_color='white', background_color='purple')
+                sg.cprint(file_to_run, text_color='white', background_color='purple')
                 try:
                     sp = sg.execute_py_file(file_to_run, pipe_output=values['-WAIT-'])
                 except Exception as e:
@@ -611,7 +649,8 @@ def main():
                             if not sg.execute_subprocess_still_running(sp):
                                 break
                 except AttributeError:
-                    sg.cprint('Your version of PySimpleGUI needs to be upgraded to fully use the "WAIT" feature.', c='white on red')
+                    sg.cprint('Your version of PySimpleGUI needs to be upgraded to fully use the "WAIT" feature.',
+                              c='white on red')
         elif event.startswith('Edit Me'):
             editor_program = get_editor()
             sg.cprint(f'opening using {editor_program}:')
@@ -644,13 +683,19 @@ def main():
                 if find_in_file.file_list_dict is None or old_typed_value is None or old_ignore_case is not is_ignore_case:
                     # New search.
                     old_typed_value = current_typed_value
-                    file_list = find_in_file(values['-FIND-'], get_file_list_dict(), verbose=values['-VERBOSE-'], window=window, ignore_case=is_ignore_case, show_first_match=values['-FIRST MATCH ONLY-'])
+                    file_list = find_in_file(values['-FIND-'], get_file_list_dict(), verbose=values['-VERBOSE-'],
+                                             window=window, ignore_case=is_ignore_case,
+                                             show_first_match=values['-FIRST MATCH ONLY-'])
                 elif current_typed_value.startswith(old_typed_value) and old_ignore_case is is_ignore_case:
                     old_typed_value = current_typed_value
-                    file_list = find_in_file(values['-FIND-'], find_in_file.file_list_dict, verbose=values['-VERBOSE-'], window=window, ignore_case=is_ignore_case, show_first_match=values['-FIRST MATCH ONLY-'])
+                    file_list = find_in_file(values['-FIND-'], find_in_file.file_list_dict, verbose=values['-VERBOSE-'],
+                                             window=window, ignore_case=is_ignore_case,
+                                             show_first_match=values['-FIRST MATCH ONLY-'])
                 else:
                     old_typed_value = current_typed_value
-                    file_list = find_in_file(values['-FIND-'], get_file_list_dict(), verbose=values['-VERBOSE-'], window=window, ignore_case=is_ignore_case, show_first_match=values['-FIRST MATCH ONLY-'])
+                    file_list = find_in_file(values['-FIND-'], get_file_list_dict(), verbose=values['-VERBOSE-'],
+                                             window=window, ignore_case=is_ignore_case,
+                                             show_first_match=values['-FIRST MATCH ONLY-'])
                 window['-DEMO LIST-'].update(sorted(file_list))
                 window['-FIND NUMBER-'].update(f'{len(file_list)} files')
                 window['-FILTER NUMBER-'].update('')
@@ -658,7 +703,8 @@ def main():
                 window['-FILTER-'].update('')
             elif values['-FIND RE-']:
                 window['-ML-'].update('')
-                file_list = find_in_file(values['-FIND RE-'], get_file_list_dict(), regex=True, verbose=values['-VERBOSE-'],window=window)
+                file_list = find_in_file(values['-FIND RE-'], get_file_list_dict(), regex=True,
+                                         verbose=values['-VERBOSE-'], window=window)
                 window['-DEMO LIST-'].update(sorted(file_list))
                 window['-FIND NUMBER-'].update(f'{len(file_list)} files')
                 window['-FILTER NUMBER-'].update('')
@@ -666,7 +712,8 @@ def main():
                 window['-FILTER-'].update('')
         elif event == 'Find RE':
             window['-ML-'].update('')
-            file_list = find_in_file(values['-FIND RE-'], get_file_list_dict(), regex=True, verbose=values['-VERBOSE-'],window=window)
+            file_list = find_in_file(values['-FIND RE-'], get_file_list_dict(), regex=True, verbose=values['-VERBOSE-'],
+                                     window=window)
             window['-DEMO LIST-'].update(sorted(file_list))
             window['-FIND NUMBER-'].update(f'{len(file_list)} files')
             window['-FILTER NUMBER-'].update('')
@@ -716,7 +763,9 @@ def main():
             for file in values['-DEMO LIST-']:
                 sg.cprint('Copying the last highlighted filename in your list')
                 if find_in_file.file_list_dict is not None:
-                    full_filename, line = window_choose_line_to_edit(file, find_in_file.file_list_dict[file][0], find_in_file.file_list_dict[file][1], find_in_file.file_list_dict[file][2])
+                    full_filename, line = window_choose_line_to_edit(file, find_in_file.file_list_dict[file][0],
+                                                                     find_in_file.file_list_dict[file][1],
+                                                                     find_in_file.file_list_dict[file][2])
                 else:
                     full_filename, line = get_file_list_dict()[file], 1
                 if line is not None:
@@ -738,10 +787,5 @@ def main():
     window.close()
 
 
-
-
-
-
 if __name__ == '__main__':
-
     main()
